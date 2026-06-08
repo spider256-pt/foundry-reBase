@@ -214,11 +214,3 @@ Security Engineer | Penetration Tester | Bhubaneswar, India
 * **Medium:** [@spider-256](https://spider-256.medium.com)
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-```
-
-```
