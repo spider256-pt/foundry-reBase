@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {ERC20} from "@openzeppelin/token/ERC20/ERC20.sol";
-import {Ownable} from "@openzeppelin/access/Ownable.sol";
-import {AccessControl} from "@openzeppelin/access/AccessControl.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 
 
@@ -67,7 +67,7 @@ contract ReBaseToken is ERC20, Ownable, AccessControl{
     * @param _to Address to mint tokens to
     * @param _amount Amount of tokens to mint (scaled by PRECISION_FACTOR)
     */
-    function mint(address _to, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE){
+    function mint(address _to, uint256 _amount, uint256 s_interestRate) external onlyRole(MINT_AND_BURN_ROLE){
         _mintAccruedInterest(_to);
         s_userInterestRate[_to] = s_interestRate;   
         _mint(_to, _amount);
@@ -221,6 +221,4 @@ contract ReBaseToken is ERC20, Ownable, AccessControl{
         return s_interestRate;
     }
     
-    
-
 }

@@ -35,14 +35,9 @@ contract Vault {
      * Assume (1:1) peg initially fo ETH to ReBase token for simplicity.
      */
     function deposit() external payable {
-        uint256 amountToMint = msg.value;
 
-        if(amountToMint == 0){
-            revert Vault__DepositIsZero();
-        }
-
-        i_reBaseToken.mint(msg.sender, amountToMint);
-        emit Deposit(msg.sender, amountToMint);
+        i_reBaseToken.mint(msg.sender, msg.value, i_reBaseToken.getGlobalInterestRate());
+        emit Deposit(msg.sender, msg.value);
     }
 
     /**

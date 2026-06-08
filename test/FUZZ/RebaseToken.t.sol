@@ -5,13 +5,13 @@ import {Test, console} from "forge-std/Test.sol";
 import {Vault} from "../../src/Vault.sol";
 import {ReBaseToken} from "../../src/ReBase.sol";
 import {IReBaseToken} from "../../src/interfaces/IReBaseToken.sol";
-import {IAccessControl} from "@openzeppelin/access/IAccessControl.sol";
-import {Ownable} from "@openzeppelin/access/Ownable.sol";
+import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract RebaseTokenTest is Test {
 
-    ReBaseToken private reBaseToken;
-    Vault private vault;
+    ReBaseToken public reBaseToken;
+    Vault public vault;
 
     address public owner = makeAddr("owner");
     address public user = makeAddr("user");
@@ -212,7 +212,7 @@ contract RebaseTokenTest is Test {
         vm.startPrank(user);
         vm.deal(user, amount);
         vault.deposit{value: amount}();
-        uint256 userBalance = reBaseToken.balanceOf(user);
+        // uint256 userBalance = reBaseToken.balanceOf(user);
         vm.expectPartialRevert(Ownable.OwnableUnauthorizedAccount.selector);
         //Act
         reBaseToken.setInterestRate(4e10);
@@ -223,16 +223,18 @@ contract RebaseTokenTest is Test {
     function testNonGrantedUSerCannotMintOrBurn(uint256 amount) public {
         
         amount = bound(amount, 1e5, type(uint96).max);
-        vm.prank(user);
+        uint256 globalInterestRate = reBaseToken.getGlobalInterestRate();
+        
         vm.deal(user, amount);
         vm.expectPartialRevert(IAccessControl.AccessControlUnauthorizedAccount.selector);
         //Act
-        reBaseToken.mint(user, 100);
-
         vm.prank(user);
+        reBaseToken.mint(user, 100, globalInterestRate);
+
+        
         vm.expectPartialRevert(IAccessControl.AccessControlUnauthorizedAccount.selector);
+        vm.prank(user);
         reBaseToken.burn(user, 100);
-  
     }
 
     
